@@ -4,7 +4,7 @@ import torch
 import torch.nn as nn
 import argparse
 # model_file is needed to be added
-from model_file import network
+from Model import LSTMmodel
 
 def create_data_loader(train_data, batch_size):
   return DataLoader(train_data, batch_size=batch_size)
@@ -59,7 +59,14 @@ if __name__ == "__main__":
 
   train_loader = create_data_loader(args.data, Batch_size)
 
-  model_ready = network().to(device)
+  hidden_size = 128
+  input_size = 64
+  nbr_layers = 2
+
+  model_ready = LSTMmodel(hidden_size = 128,
+                          input_size = 64,
+                          nbr_layers = 2,
+                          device = device).to(device)
   print(model_ready)
 
   loss_fn = nn.CrossEntropyLoss()

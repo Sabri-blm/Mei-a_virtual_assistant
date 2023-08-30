@@ -31,6 +31,11 @@ class WakeWordDataset(Dataset):
     audio = self._right_padding_if_necessary(audio)
     # Lastly create the Mel-Spectrogram
     audio = self.transformations(audio)
+    # we remove the channel dimention from (nbr_channels, n_mels, time) -> (n_mels, time)
+    audio = audio.squeeze(dim=0)
+    # now we transpose from (n_mels, time) -> (time, n_mels) for the input of LSTM
+    audio = torch.transpose(audio, 0, 1)
+
     return audio, label
 
   def _resample_if_necessary(self, audio, sr):
@@ -81,3 +86,4 @@ if __name__ == "__main__":
   audio, label = data[0]
 
   audio.shape
+  # [should be (time, n_mels) -> example: (469, 64)]
