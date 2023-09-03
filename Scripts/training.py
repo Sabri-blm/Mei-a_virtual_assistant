@@ -40,7 +40,7 @@ if __name__ == "__main__":
                       help="The batch size.")
   parser.add_argument("--epoch", required=True, default=10,
                       help="The epochs.")
-  parser.add_argument("-lr", "--learning_rate", required=True, default=0.001,
+  parser.add_argument("-lr", "--learning_rate", required=True, default=0.01,
                       help="The learning rate.")
 
   args = parser.parse_args()
@@ -61,12 +61,14 @@ if __name__ == "__main__":
 
   hidden_size = 128
   input_size = 64
-  nbr_layers = 2
+  nbr_layers = 1
 
   model_ready = LSTMmodel(hidden_size = 128,
                           input_size = 64,
-                          nbr_layers = 2,
-                          device = device).to(device)
+                          nbr_layers = 1,
+                          device = device,
+                          nbr_classes = 2,
+                          dropouts = 0.2).to(device)
   print(model_ready)
 
   loss_fn = nn.CrossEntropyLoss()

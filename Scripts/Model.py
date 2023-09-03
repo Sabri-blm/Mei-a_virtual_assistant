@@ -10,20 +10,26 @@ class LSTMmodel(nn.Module):
     self.nbr_layers = nbr_layers
     self.device = device
 
-    self.lstm = nn.LSTM(input_size=self.input_size, 
-                        hidden_size=self.hidden_size, 
-                        num_layers=self.nbr_layers, 
+    self.lstm = nn.LSTM(input_size=self.input_size,
+                        hidden_size=self.hidden_size,
+                        num_layers=self.nbr_layers,
                         batch_first=True,
                         dropout = dropouts)
     # after the batch first the shape of input and output should be (batch, sequence==time, features)
     self.fc = nn.Linear(self.hidden_size, nbr_classes)
-  
+    self.relu = nn.ReLU()
+    self.out_put = nn.Softmax(dim=1)
+
   def forward(self, x):
     # x.shape[0] == batch_size
     hidden_state = torch.zeros(self.nbr_layers, x.shape[0], self.hidden_size).to(self.device)
     cell_state = torch.zeros(self.nbr_layers, x.shape[0], self.hidden_size).to(self.device)
 
-    out, _ = self.lstm(x, (hidden_state, cell_state))
+    out, _ = self.lstm(x, (hidden_state.detach(), cell_state.detach()))
+    out = self.relu(out)
     out = self.fc(out[:, -1, :])
+    #print(out)
+    #out = self.out_put(out)
 
     return out
+

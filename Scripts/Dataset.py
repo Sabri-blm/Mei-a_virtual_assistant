@@ -4,6 +4,7 @@ from torch.utils.data import Dataset
 import torchaudio
 import torch
 import pandas as pd
+import torch.nn as nn
 
 class WakeWordDataset(Dataset):
   def __init__(self, csv, sample_rate, nbr_samples, device, transformations):
@@ -77,11 +78,13 @@ if __name__ == "__main__":
                                                         hop_length=512, # half the frame_size n_fft
                                                         n_mels=64)
 
-  data = WakeWordDataset(csv = "/content/train_data_wakeword.csv",
+  transform = nn.Sequential(mel_spectrogram)
+
+  data = WakeWordDataset(csv = "/content/wakeword_4smp.csv",
                       sample_rate = SAMPLE_RATE,
                       nbr_samples = NBR_SAMPLES,
                       device = device,
-                      transformations = mel_spectrogram)
+                      transformations = transform.to(device))
 
   audio, label = data[0]
 
